@@ -23,8 +23,8 @@ export default function Dashboard({ state, status, isWorking, onSubmit, onCancel
   return (
     <div className="shell">
       <header className="masthead">
-        <h1 className="masthead__title">Loophole</h1>
-        <p className="masthead__sub">Paste dense text. Get its argument, one piece at a time.</p>
+        <h1 className="masthead__title">Logical Steps</h1>
+        <p className="masthead__sub">Paste dense text. See the argument, one logical step at a time.</p>
       </header>
 
       <main className="stack">
