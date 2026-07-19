@@ -1,0 +1,54 @@
+/* tokens.css — every colour, size and duration in the app lives here.
+   Nothing downstream is allowed to hardcode a value.
+
+   Direction: quiet paper. Cool off-white ground, low-saturation earth inks.
+   Nothing above ~35% saturation, nothing pure white, nothing pure black —
+   high-contrast glare is a stimulation problem, not an accessibility win.
+   Body text still sits at or above 7:1 against its background. */
+
+:root {
+  /* ---- ground ---- */
+  --paper:      #F2F3F0;
+  --card:       #FAFBF9;
+  --rule:       #D8DCD5;
+  --ink:        #1F2528;
+  --ink-soft:   #5C666B;
+
+  /* ---- role inks. One per logical role. Never reused for anything else. ---- */
+  --role-context:      #6B7278;  /* grey      — skimmable */
+  --role-counterpoint: #7A6A4F;  /* olive     — the other side */
+  --role-premise:      #45685B;  /* moss      — stated support */
+  --role-conclusion:   #2F5068;  /* deep blue — the point */
+  --role-assumption:   #6B5876;  /* plum      — the unstated leap */
+
+  /* ---- type ----
+     Atkinson Hyperlegible was drawn for letterform disambiguation, which is the
+     whole job here. IBM Plex Mono carries the structural furniture — role
+     labels, connectives, eyebrows — so structure never reads as prose. */
+  --face-body: 'Atkinson Hyperlegible', ui-sans-serif, system-ui, sans-serif;
+  --face-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+
+  --t-xs:  0.78rem;
+  --t-sm:  0.9rem;
+  --t-md:  1.0625rem;
+  --t-lg:  1.3rem;
+  --t-xl:  1.9rem;
+
+  --lead-tight: 1.35;
+  --lead-body:  1.65;   /* generous leading; dense blocks are the enemy */
+
+  /* ---- space (4px base) ---- */
+  --s1: 0.25rem; --s2: 0.5rem;  --s3: 0.75rem;
+  --s4: 1rem;    --s5: 1.5rem;  --s6: 2rem;    --s7: 3rem;
+
+  --radius: 6px;
+  --measure: 62ch;      /* hard cap on line length, everywhere */
+
+  /* ---- motion. Short, and only ever on user action. ---- */
+  --dur: 120ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur: 0ms; }
+  * { animation: none !important; transition: none !important; }
+}
