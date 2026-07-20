@@ -15,6 +15,11 @@ export class AnalysisValidationError extends Error {
   constructor(issues){super(`Invalid analysis response: ${issues.join('; ')}`);this.name='AnalysisValidationError';this.issues=issues;}
 }
 
+function isOneSentence(text){
+  const trimmed=text.trim().replace(/[.!?]\s*$/,'');
+  return !/[.!?]\s+\S/.test(trimmed);
+}
+
 export function validateAnalysis(value){
   const issues=[];
   if(!value||typeof value!=='object'||Array.isArray(value))throw new AnalysisValidationError(['response must be an object']);
@@ -23,7 +28,7 @@ export function validateAnalysis(value){
     const gist=value.gist.trim();
     if(gist.length<20||gist.split(/\s+/).length<4||badGists.has(gist.toLowerCase()))issues.push('gist is too short or looks like placeholder text');
     if(gist.length>180)issues.push('gist must be 180 characters or fewer');
-    if(/[.!?].+\S/.test(gist.replace(/[.!?]\s*$/,'')))issues.push('gist must be one sentence');
+    if(!isOneSentence(gist))issues.push('gist must be one sentence');
   }
   if(!Array.isArray(value.nodes)||value.nodes.length===0)issues.push('nodes must be a non-empty array');
   if(!value.meta||typeof value.meta!=='object'||Array.isArray(value.meta))issues.push('meta must be an object');
