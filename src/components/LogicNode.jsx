@@ -13,10 +13,13 @@ export default function LogicNode({node,isFocused,isDimmed,isRevealed,onFocus,on
   return <div className={['node',`node--${role}`,isFocused?'node--focused':'',isDimmed?'node--dimmed':''].filter(Boolean).join(' ')}>
     {node.connective&&<span className="node__connective" aria-hidden="true">{node.connective}</span>}
     <article className="node__card" tabIndex={0} role="button"
-      aria-label={`Select ${roleLabel}: ${node.plain}`} aria-pressed={isFocused}
+      aria-label={`Select ${roleLabel} card`} aria-pressed={isFocused}
       onFocus={select} onClick={select}
       onKeyDown={(event)=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();select();}}}>
-      {confidence&&<header className="node__head"><span className="node__confidence">{confidence}</span></header>}
+      <header className="node__head">
+        <span className="node__role">{roleLabel}</span>
+        {confidence&&<span className="node__confidence">{confidence}</span>}
+      </header>
       <p className="node__plain">{node.plain}</p>
       <p className="node__hint">{meta.hint}</p>
       {node.original&&<>
