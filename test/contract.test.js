@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { ROLES, validateAnalysis, AnalysisValidationError } from '../src/services/analysisContract.js';
 
-const valid = { id: 'a', sourceText: 'Source', gist: 'Gist', meta: { model: 'test' }, nodes: [
-  { id: 'n1', role: ROLES.PREMISE, plain: 'Reason', original: 'Reason', dependsOn: [] },
-  { id: 'n2', role: ROLES.CONCLUSION, plain: 'Point', original: 'Point', dependsOn: ['n1'], connective: 'therefore' },
+const valid = { id: 'a', sourceText: 'Source', gist: 'The author argues that the policy should be adopted because it improves retention.', meta: { model: 'test' }, nodes: [
+  { id: 'n1', role: ROLES.PREMISE, plain: 'Retention improved after the policy began.', original: 'Retention improved.', dependsOn: [] },
+  { id: 'n2', role: ROLES.CONCLUSION, conclusionType: 'primary', plain: 'The policy should be adopted.', original: 'Adopt the policy.', dependsOn: ['n1'], connective: 'therefore' },
 ] };
 
 test('runtime contract accepts valid analysis', () => assert.equal(validateAnalysis(valid), valid));
