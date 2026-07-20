@@ -1,10 +1,17 @@
 import { useMemo } from 'react';
-import { sortNodes, ROLE_META } from '../services/analysisContract.js';
+import { sortNodes } from '../services/analysisContract.js';
 import LogicNode from './LogicNode.jsx';
 import { collectDependencyClosure } from '../services/dependencyGraph.js';
 
 function displayRole(node){return node.role==='assumption'&&node.original?.trim()?'premise':node.role;}
-function headingFor(node){const role=displayRole(node);if(role!=='conclusion')return ROLE_META[role].label;return node.conclusionType==='primary'?'Main point':'Intermediate point';}
+function headingFor(node){
+  const role=displayRole(node);
+  if(role==='context')return'Background and setup';
+  if(role==='counterpoint')return'Views raised but not endorsed';
+  if(role==='premise')return'Reported facts and reasons';
+  if(role==='assumption')return'Unstated bridges';
+  return node.conclusionType==='primary'?'Main conclusion':'Intermediate conclusions';
+}
 
 export default function LogicMap({ nodes, focusedNodeId, revealedNodeIds, focusMode, onFocusNode, onToggleOriginal, onSetFocusMode }) {
   const ordered=useMemo(()=>sortNodes(nodes),[nodes]);
