@@ -22,10 +22,12 @@ export function validateAnalysis(value){
   if(typeof value.gist==='string'){
     const gist=value.gist.trim();
     if(gist.length<20||gist.split(/\s+/).length<4||badGists.has(gist.toLowerCase()))issues.push('gist is too short or looks like placeholder text');
+    if(gist.length>180)issues.push('gist must be 180 characters or fewer');
+    if(/[.!?].+\S/.test(gist.replace(/[.!?]\s*$/,'')))issues.push('gist must be one sentence');
   }
   if(!Array.isArray(value.nodes)||value.nodes.length===0)issues.push('nodes must be a non-empty array');
   if(!value.meta||typeof value.meta!=='object'||Array.isArray(value.meta))issues.push('meta must be an object');
-  const ids=new Set();let primaryCount=0;
+  const ids=new Set();let primaryCount=0;let conclusionCount=0;
   if(Array.isArray(value.nodes)){
     value.nodes.forEach((node,index)=>{
       const path=`nodes[${index}]`;
@@ -38,11 +40,12 @@ export function validateAnalysis(value){
       if(node.connective!=null&&!connectiveValues.has(node.connective))issues.push(`${path}.connective is unknown`);
       if(node.connective!=null&&Array.isArray(node.dependsOn)&&node.dependsOn.length===0)issues.push(`${path}.connective requires at least one dependency`);
       if(node.confidence!=null&&(typeof node.confidence!=='number'||node.confidence<0||node.confidence>1))issues.push(`${path}.confidence must be between 0 and 1`);
-      if(node.role===ROLES.CONCLUSION&&node.conclusionType==='primary')primaryCount++;
+      if(node.role===ROLES.ASSUMPTION&&node.original.trim())issues.push(`${path}.assumption must not contain original wording`);
+      if(node.role===ROLES.CONCLUSION){conclusionCount++;if(node.conclusionType==='primary')primaryCount++;}
     });
     value.nodes.forEach((node,index)=>{if(!node||!Array.isArray(node.dependsOn))return;for(const id of node.dependsOn){if(!ids.has(id))issues.push(`nodes[${index}].dependsOn references missing node "${id}"`);if(id===node.id)issues.push(`nodes[${index}] cannot depend on itself`);}});
   }
-  if(primaryCount>1)issues.push('only one conclusion may be primary');
+  if(conclusionCount>0&&primaryCount!==1)issues.push('analysis must contain exactly one primary conclusion');
   if(issues.length)throw new AnalysisValidationError(issues);
   return value;
 }
