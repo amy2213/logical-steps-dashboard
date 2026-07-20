@@ -1,18 +1,16 @@
 import { ROLE_META } from '../services/analysisContract.js';
 
 function confidenceWord(value){if(value==null)return null;if(value>=.8)return'Likely';if(value>=.5)return'Possible';return'A stretch';}
-
-function accessibleRole(node){
-  if(node.role!=='conclusion')return ROLE_META[node.role].label;
-  return node.conclusionType==='primary'?'Main point':'Intermediate point';
-}
+function displayRole(node){return node.role==='assumption'&&node.original?.trim()?'premise':node.role;}
+function accessibleRole(node){const role=displayRole(node);if(role!=='conclusion')return ROLE_META[role].label;return node.conclusionType==='primary'?'Main point':'Intermediate point';}
 
 export default function LogicNode({node,isFocused,isDimmed,isRevealed,onFocus,onToggleOriginal}){
-  const meta=ROLE_META[node.role];
+  const role=displayRole(node);
+  const meta=ROLE_META[role];
   const confidence=confidenceWord(node.confidence);
   const roleLabel=accessibleRole(node);
   const select=()=>onFocus(node.id);
-  return <div className={['node',`node--${node.role}`,isFocused?'node--focused':'',isDimmed?'node--dimmed':''].filter(Boolean).join(' ')}>
+  return <div className={['node',`node--${role}`,isFocused?'node--focused':'',isDimmed?'node--dimmed':''].filter(Boolean).join(' ')}>
     {node.connective&&<span className="node__connective" aria-hidden="true">{node.connective}</span>}
     <article className="node__card" tabIndex={0} role="button"
       aria-label={`Select ${roleLabel}: ${node.plain}`} aria-pressed={isFocused}
